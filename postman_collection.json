@@ -1,0 +1,164 @@
+{
+  "info": {
+    "name": "Credit Card Payment System",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "django_url", "value": "http://localhost:8000/api" },
+    { "key": "fastapi_url", "value": "http://localhost:8001/api" },
+    { "key": "access_token", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{django_url}}/auth/register/",
+            "body": { "mode": "raw", "raw": "{\"username\":\"alice\",\"email\":\"alice@example.com\",\"password\":\"StrongPass123\"}" }
+          }
+        },
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{django_url}}/auth/login/",
+            "body": { "mode": "raw", "raw": "{\"username\":\"alice\",\"password\":\"StrongPass123\"}" }
+          }
+        },
+        {
+          "name": "Me",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
+            "url": "{{django_url}}/auth/me/"
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "url": "{{django_url}}/auth/logout/",
+            "body": { "mode": "raw", "raw": "{\"refresh\":\"<refresh_token>\"}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cards",
+      "item": [
+        {
+          "name": "Add Card",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "url": "{{django_url}}/cards/",
+            "body": { "mode": "raw", "raw": "{\"card_holder_name\":\"Alice\",\"brand\":\"VISA\",\"card_number\":\"4111111111111234\",\"expiry_month\":12,\"expiry_year\":2030}" }
+          }
+        },
+        {
+          "name": "List Cards",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
+            "url": "{{django_url}}/cards/"
+          }
+        },
+        {
+          "name": "Delete Card",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
+            "url": "{{django_url}}/cards/1/"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Payments",
+      "item": [
+        {
+          "name": "Make Payment",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{access_token}}" }
+            ],
+            "url": "{{fastapi_url}}/payments/",
+            "body": { "mode": "raw", "raw": "{\"card_id\":1,\"amount\":49.99,\"currency\":\"USD\"}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Transactions",
+      "item": [
+        {
+          "name": "List Transactions",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
+            "url": "{{django_url}}/transactions/?status=SUCCESS"
+          }
+        },
+        {
+          "name": "Export CSV (admin)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
+            "url": "{{django_url}}/transactions/export/"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admin Panel",
+      "item": [
+        {
+          "name": "List Users",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
+            "url": "{{django_url}}/admin-panel/users/"
+          }
+        },
+        {
+          "name": "List All Cards",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
+            "url": "{{django_url}}/admin-panel/cards/"
+          }
+        },
+        {
+          "name": "List All Transactions",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
+            "url": "{{django_url}}/admin-panel/transactions/"
+          }
+        },
+        {
+          "name": "Daily Summary",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{access_token}}" }],
+            "url": "{{django_url}}/admin-panel/summary/"
+          }
+        }
+      ]
+    }
+  ]
+}

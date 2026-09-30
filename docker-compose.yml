@@ -1,0 +1,53 @@
+
+
+services:
+  mysql:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root_pass
+      MYSQL_DATABASE: payment_system
+      MYSQL_USER: payment_user
+      MYSQL_PASSWORD: payment_pass
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  django:
+    build: ./backend_django
+    restart: always
+    env_file: ./backend_django/.env
+    environment:
+      MYSQL_HOST: mysql
+    ports:
+      - "8000:8000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    volumes:
+      - ./backend_django:/app
+
+  fastapi:
+    build: ./backend_fastapi
+    restart: always
+    env_file: ./backend_django/.env
+    environment:
+      MYSQL_HOST: mysql
+    ports:
+      - "8001:8001"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      django:
+        condition: service_started
+    volumes:
+      - ./backend_fastapi:/app
+
+volumes:
+  mysql_data:
