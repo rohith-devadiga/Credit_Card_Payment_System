@@ -128,6 +128,6 @@ cd backend_fastapi && pytest
 After running `createsuperuser`, note the chosen username here for the reviewer, e.g.:
 ```
 username: admin
-password: <set at createsuperuser prompt>
+password: Rdevadiga&5
 ```
 
